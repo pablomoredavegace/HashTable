@@ -45,6 +45,21 @@ class SumaDispersion : public DispersionFunction<Key> {
 
   private: 
     unsigned Tamaño_Table;
+
+template <class Key>
+class RandDispersion : public RandDispersion<Key> {
+  public:
+    explicit RandDispersion(unsigned table_size)
+      : Tamaño_Table(table_size) {}
+    
+    unsigned operator()(const Key& key) const override {
+      std::srand(static_cast<unsigned>std::rand()) % Tamaño_Table;
+    }
+  
+  private: 
+    unsigned Tamaño_Table;
+  }
+
 };
 
 #endif
