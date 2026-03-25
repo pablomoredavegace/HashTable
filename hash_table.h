@@ -99,7 +99,7 @@ class HashTable<Key, DynamicSequence<Key>> : public Sequence<Key> {
       return table_[index].search(key);
     }
 
-    bool insert(const Key& key) const override {
+    bool insert(const Key& key) override {
       unsigned index = fd_(key);
       return table_[index].insert(key);
     }

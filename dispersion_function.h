@@ -45,9 +45,10 @@ class SumaDispersion : public DispersionFunction<Key> {
 
   private: 
     unsigned Tamaño_Table;
+};
 
 template <class Key>
-class RandDispersion : public RandDispersion<Key> {
+class RandDispersion : public DispersionFunction<Key> {
   public:
     explicit RandDispersion(unsigned table_size)
       : Tamaño_Table(table_size) {}
@@ -58,8 +59,6 @@ class RandDispersion : public RandDispersion<Key> {
   
   private: 
     unsigned Tamaño_Table;
-  }
-
 };
 
 #endif
