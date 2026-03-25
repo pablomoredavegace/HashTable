@@ -7,9 +7,21 @@
 #include "dynamic_sequence.h"
 #include "static_sequence.h"
 
+/**
+ * @brief Tabla hash para dispersión cerrada
+ * @param Key Tipo de clave
+ * @param Container Tipo de contenedor de cada posición de la tabla
+ */
 template <class Key, class Container = StaticSequence<Key>>
 class HashTable : public Sequence<Key> {
   public:
+    /**
+     * @brief Constructor de tabla hash para dispersión cerrada
+     * @param table_size Tamaño de la tabla
+     * @param fd Función de dispersión
+     * @param fe Función de exploración
+     * @param block_size Tamaño del bloque en cada posición
+     */
     HashTable(unsigned table_size, DispersionFunction<Key>& fd,
               ExplorationFunction<Key>& fe, unsigned block_size)
     :Tamaño_table(table_size), table_(nullptr), fd_(fd), fe_(fe),
@@ -20,6 +32,9 @@ class HashTable : public Sequence<Key> {
       }
     }
 
+    /**
+     * @brief Liberar memoria de la tabla hash
+     */
     ~HashTable() override {
       for(unsigned i = 0; i < Tamaño_table; ++i) {
         delete table_[i];
@@ -27,6 +42,11 @@ class HashTable : public Sequence<Key> {
       delete[] table_;
     }
 
+    /**
+     * @brief Búsqueda de clave en la tabla hash
+     * @param key Clave a buscar
+     * @return true si se encuentra la clave, false si no lo está
+     */
     bool search(const Key& key) const override {
       unsigned index = fd_(key);
 
@@ -52,6 +72,11 @@ class HashTable : public Sequence<Key> {
       return false;
     }
 
+    /**
+     * @brief Inserción de clave en la tabla hash
+     * @param key Clave a insertar
+     * @return true si se inserta la clave, false si no se inserta
+     */
     bool insert(const Key& key) override {
       if(search(key)) {
         return false;
@@ -82,23 +107,45 @@ class HashTable : public Sequence<Key> {
 };
 
 
+/**
+ * @brief Especialización de tabla hash para dispersión abierta
+ * @param Key Tipo de clave almacenada
+ */
 template <class Key>
 class HashTable<Key, DynamicSequence<Key>> : public Sequence<Key> {
   public:
+    /**
+     * @brief Constructor de tabla hash para dispersión abierta
+     * @param table_size Tamaño de la tabla
+     * @param fd Función de dispersión
+     */
     HashTable(unsigned table_size, DispersionFunction<Key>& fd)
     :Tamaño_table(table_size), table_(nullptr), fd_(fd) {
       table_ = new DynamicSequence<Key>[Tamaño_table];
     }
 
+    /**
+     * @brief Liberar memoria de la tabla hash
+     */
     ~HashTable() override {
       delete[] table_;
     }
 
+    /**
+     * @brief Búsqueda de clave en la tabla hash
+     * @param key Clave a buscar
+     * @return true si se encuentra la clave, false si no lo está
+     */
     bool search(const Key& key) const override {
       unsigned index = fd_(key);
       return table_[index].search(key);
     }
 
+    /**
+     * @brief Inserción de clave en la tabla hash
+     * @param key Clave a insertar
+     * @return true si se inserta la clave, false si no se inserta
+     */
     bool insert(const Key& key) override {
       unsigned index = fd_(key);
       return table_[index].insert(key);
